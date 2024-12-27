@@ -100,7 +100,7 @@ def scrape_trending_topics():
     options = webdriver.ChromeOptions()
     # options.add_argument(f"--proxy-server={PROXY_URL}")
     options.add_argument(f"--proxy-server={SCRAPERAPI_PROXY_URL}")
-    # options.add_argument("--headless")  # Run browser in headless mode
+    options.add_argument("--headless")  # Run browser in headless mode
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     service = Service(CHROME_DRIVER_PATH)
