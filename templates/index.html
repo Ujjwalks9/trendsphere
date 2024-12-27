@@ -1,0 +1,53 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending Topics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Twitter Trending Topics</h1>
+    <button id="run-script">Run Script</button>
+    <div id="results"></div>
+
+    <script>
+        document.getElementById("run-script").addEventListener("click", async () => {
+            try {
+                const response = await fetch("/run-script", { method: "POST" });
+                const data = await response.json();
+                const resultsDiv = document.getElementById("results");
+
+                if (data.error) {
+                    resultsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+                    return;
+                }
+
+                // Extract trends from data
+                const trends = [
+                    data.trend1,
+                    data.trend2,
+                    data.trend3,
+                    data.trend4,
+                    data.trend5,
+                ].filter(Boolean); // Remove null or undefined values
+
+                // Render trends and metadata
+                resultsDiv.innerHTML = `
+                    <h2>These are the most happening topics as of ${new Date(data.timestamp).toLocaleString()}:</h2>
+                    <ul>
+                        ${trends.map(trend => `<li>${trend}</li>`).join("")}
+                    </ul>
+                    <p>The IP address used for this query was ${data.ip_address}.</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                document.getElementById("results").innerHTML = `<p>An error occurred while fetching data.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
